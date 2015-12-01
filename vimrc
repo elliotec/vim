@@ -25,8 +25,6 @@ Plugin 'guns/vim-clojure-static'
 Plugin 'guns/vim-clojure-highlight'
 Plugin 'tpope/vim-fireplace'
 Plugin 'eapache/rainbow_parentheses.vim'
-Plugin 'beautify-web/js-beautify'
-Plugin 'maksimr/vim-jsbeautify'
 Plugin 'othree/javascript-libraries-syntax.vim'
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'Valloric/MatchTagAlways'
@@ -37,13 +35,13 @@ Plugin 'terryma/vim-expand-region'
 Plugin 'mattn/emmet-vim'
 Plugin 'mustache/vim-mustache-handlebars'
 Plugin 'YankRing.vim'
+Plugin 'rking/ag.vim'
+Plugin 'osyo-manga/vim-over'
+Plugin 'airblade/vim-gitgutter'
 Plugin 'reedes/vim-pencil'
 Plugin 'reedes/vim-lexical'
 Plugin 'reedes/vim-litecorrect'
 Plugin 'reedes/vim-wordy'
-Plugin 'airblade/vim-gitgutter'
-Plugin 'rking/ag.vim'
-Plugin 'osyo-manga/vim-over'
 call vundle#end()
 " Re-enable filetype when Vundle is done
 filetype plugin indent on
@@ -64,7 +62,6 @@ set number
 " Enable smart case matching
 set smartcase
 " Keep encoding utf-8
-set dir=$TEMP
 set encoding=utf-8
 set fileencoding=utf-8
 " Backspace kills end of line and moves to previous
@@ -169,8 +166,8 @@ vmap <C-v> <Plug>(expand_region_shrink)
 nnoremap <leader>ev :vsp $MYVIMRC<CR>
 " save with <leader>w
 nnoremap <leader>w :w<CR>
-" select all with ,a
-noremap <leader>a ggVG
+" set vim-over command to leader f
+nnoremap <leader>f :OverCommandLine<CR>
 " toggle nerdtree with ctrl-o
 map <C-o> :NERDTreeToggle %:p:h<CR>
 " tab and shift-tab do proper thing
@@ -183,20 +180,7 @@ au VimEnter * RainbowParenthesesToggle
 au Syntax * RainbowParenthesesLoadRound
 au Syntax * RainbowParenthesesLoadSquare
 au Syntax * RainbowParenthesesLoadBraces
-" beautifier mapping to ,bf
-autocmd FileType javascript noremap <buffer> <leader>bf :call JsBeautify()<CR>
-autocmd FileType json noremap <buffer> <leader>bf :call JsBeautify()<CR>
-autocmd FileType html,hbs noremap <buffer> <leader>bf :call HtmlBeautify()<CR>
-autocmd FileType css noremap <buffer> <leader>bf :call CSSBeautify()<CR>
-" Tab for indent or autocomplete
-function! Tab_Or_Complete()
-    if col('.')>1 && strpart( getline('.'), col('.')-2, 3 ) =~ '^\w'
-      return "\<C-N>"
-    else
-      return "\<Tab>"
-    endif
-endfunction
-inoremap <Tab> <C-R>=Tab_Or_Complete()<CR>
+" dictionary path
 set dictionary="/usr/dict/words"
 " lightline settings
 let g:lightline = {
@@ -224,30 +208,31 @@ vnoremap <C-k> :m '<-2<CR>gv=gv
 " kill scratch buffer after selection is made
 autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
 autocmd InsertLeave * if pumvisible() == 0|pclose|endif
-" use jshint for syntastic
+" use eslint for syntastic
 let g:syntastic_javascript_checkers = ['eslint']
 " emmet expander
 let g:user_emmet_expandabbr_key = '<c-y>'
 " pencil config for prose
 augroup pencil
   autocmd!
-  autocmd FileType markdown,mkd,md call pencil#init()
-  autocmd FileType text         call pencil#init()
+  autocmd FileType markdown,md call pencil#init()
+  autocmd FileType txt         call pencil#init()
 augroup END
 "thesaurus
 augroup lexical
   autocmd!
-  autocmd FileType markdown,mkd,md call lexical#init()
-  autocmd FileType textile call lexical#init()
-  autocmd FileType text call lexical#init({ 'spell': 0 })
+  autocmd FileType markdown,md call lexical#init()
+  autocmd FileType txt call lexical#init({ 'spell': 0 })
 augroup END
+"lite autocorrect
 augroup litecorrect
   autocmd!
-  autocmd FileType markdown,mkd call litecorrect#init()
-  autocmd FileType textile call litecorrect#init()
+  autocmd FileType markdown,md call litecorrect#init()
+  autocmd FileType txt call litecorrect#init()
 augroup END
 " bring up thesaurus
 let g:lexical#thesaurus_key = '<leader>t'
 " ag alwyas starts from project root
 let g:ag_working_path_mode="r"
+" create yankring history file in vim dir
 let g:yankring_history_dir="~/.vim/"
